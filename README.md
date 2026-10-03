@@ -2,7 +2,6 @@
 
 A modern, warm-roast coffee shop discovery and workspace rating web app designed for digital nomads, remote workers, students, and specialty coffee connoisseurs.
 
-Part of the **Project Series** by Mosopefoluwa.
 
 ---
 
