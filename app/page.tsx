@@ -32,7 +32,9 @@ import {
   Star,
   Loader2,
   Navigation,
-  Globe2
+  Globe2,
+  Columns,
+  Map as MapIcon
 } from 'lucide-react';
 
 const CafeMap = dynamic(() => import('@/components/map/cafe-map'), {
@@ -306,56 +308,56 @@ export default function CoffeeShopDashboard() {
 
       {/* Hero Nomad Spotlight Banner */}
       {spotlightCafe && !showOnlySaved && !filters.searchQuery && (
-        <section className="relative w-full border-b border-[#2d2218] bg-gradient-to-b from-[#1c1510] to-[#120e0a] overflow-hidden py-8 px-4 sm:px-6">
+        <section className="relative w-full border-b border-[#2d2218] bg-gradient-to-b from-[#1c1510] to-[#120e0a] overflow-hidden py-6 sm:py-8 px-3 sm:px-6">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(217,119,6,0.15),transparent_50%)] pointer-events-none" />
-          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
-            <div className="space-y-3 max-w-xl text-center md:text-left">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-5 sm:gap-6 relative z-10">
+            <div className="space-y-2.5 sm:space-y-3 max-w-xl text-center md:text-left w-full">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] sm:text-xs font-black bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                 <span>Featured Remote Work Sanctuary</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight leading-tight">
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-white tracking-tight leading-tight">
                 {spotlightCafe.name}
               </h2>
-              <p className="text-sm font-semibold text-amber-300">
+              <p className="text-xs sm:text-sm font-semibold text-amber-300">
                 {spotlightCafe.neighborhood} • {spotlightCafe.city}
               </p>
               <p className="text-xs text-stone-400 line-clamp-2 leading-relaxed">
                 {spotlightCafe.tagline}
               </p>
 
-              <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
+              <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5 pt-2">
                 <button
                   onClick={() => handleSelectCafe(spotlightCafe)}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 text-white font-extrabold text-xs shadow-warm hover:brightness-110 transition-all active:scale-95 flex items-center gap-2"
+                  className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 text-white font-extrabold text-xs shadow-warm hover:brightness-110 transition-all active:scale-95 flex items-center justify-center gap-2"
                 >
-                  <Coffee className="w-4 h-4" />
+                  <Coffee className="w-4 h-4 shrink-0" />
                   <span>Explore Desks & Menu</span>
                 </button>
 
-                <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-[#1b1510] border border-[#2d2218] text-xs">
-                  <Wifi className="w-3.5 h-3.5 text-emerald-400" />
+                <div className="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-[#1b1510] border border-[#2d2218] text-xs">
+                  <Wifi className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   <span className="font-bold text-white">{spotlightCafe.wifi_speed_mbps} Mbps</span>
                   <span className="text-stone-500">•</span>
-                  <Zap className="w-3.5 h-3.5 text-amber-400" />
+                  <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                   <span className="text-stone-300 font-medium">Outlets at Every Seat</span>
                 </div>
               </div>
             </div>
 
             {/* Quick Stats Pill Cards */}
-            <div className="grid grid-cols-2 gap-3 w-full md:w-auto shrink-0 text-xs">
-              <div className="p-4 rounded-2xl bg-[#1e1711]/90 border border-[#2d2218] text-center">
+            <div className="grid grid-cols-2 gap-2.5 sm:gap-3 w-full md:w-auto shrink-0 text-xs">
+              <div className="p-3 sm:p-4 rounded-2xl bg-[#1e1711]/90 border border-[#2d2218] text-center">
                 <span className="text-[10px] uppercase font-bold text-stone-400 block mb-0.5">Rating</span>
-                <span className="text-xl font-black text-amber-400 flex items-center justify-center gap-1">
-                  <Star className="w-4 h-4 fill-amber-400" />
+                <span className="text-lg sm:text-xl font-black text-amber-400 flex items-center justify-center gap-1">
+                  <Star className="w-4 h-4 fill-amber-400 shrink-0" />
                   {spotlightCafe.rating}
                 </span>
                 <span className="text-[10px] text-stone-500 block mt-0.5">{spotlightCafe.review_count} Nomad Reviews</span>
               </div>
-              <div className="p-4 rounded-2xl bg-[#1e1711]/90 border border-[#2d2218] text-center">
+              <div className="p-3 sm:p-4 rounded-2xl bg-[#1e1711]/90 border border-[#2d2218] text-center">
                 <span className="text-[10px] uppercase font-bold text-stone-400 block mb-0.5">Desk Status</span>
-                <span className="text-xl font-black text-emerald-400">{spotlightCafe.busyness_score}%</span>
+                <span className="text-lg sm:text-xl font-black text-emerald-400">{spotlightCafe.busyness_score}%</span>
                 <span className="text-[10px] text-stone-500 block mt-0.5">Seats Available</span>
               </div>
             </div>
@@ -373,11 +375,11 @@ export default function CoffeeShopDashboard() {
       />
 
       {/* Main Content Area */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
+      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-6 pb-24 lg:pb-6">
         {/* Results Header */}
-        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div className="flex flex-wrap items-center justify-between gap-2.5 sm:gap-3 mb-3 sm:mb-4">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="font-extrabold text-lg text-white">
+            <h3 className="font-extrabold text-base sm:text-lg text-white">
               {showOnlySaved
                 ? 'Your Saved Cafés'
                 : selectedCity === 'current-gps'
@@ -389,7 +391,7 @@ export default function CoffeeShopDashboard() {
             </span>
             {isLoadingOsm && (
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 animate-pulse">
-                <Loader2 className="w-3 h-3 animate-spin text-amber-400" />
+                <Loader2 className="w-3 h-3 animate-spin text-amber-400 shrink-0" />
                 Scanning Overpass API...
               </span>
             )}
@@ -416,11 +418,11 @@ export default function CoffeeShopDashboard() {
 
         {/* Content Layout Modes */}
         {layoutMode === 'split' && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6">
             {/* Left Column: Café Cards */}
             <div className="lg:col-span-7 xl:col-span-6 space-y-4">
               {filteredCafes.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 sm:gap-4">
                   {filteredCafes.map((cafe, index) => (
                     <CafeCard
                       key={cafe.id}
@@ -459,7 +461,7 @@ export default function CoffeeShopDashboard() {
                       });
                       setShowOnlySaved(false);
                     }}
-                    className="px-4 py-2 rounded-xl text-xs font-bold bg-amber-600 text-white shadow-md"
+                    className="px-4 py-2 rounded-xl text-xs font-bold bg-amber-600 text-white shadow-md active:scale-95"
                   >
                     Reset All Filters
                   </button>
@@ -467,8 +469,8 @@ export default function CoffeeShopDashboard() {
               )}
             </div>
 
-            {/* Right Column: Sticky Interactive Café Radar Map */}
-            <div className="lg:col-span-5 xl:col-span-6 lg:sticky lg:top-24 h-[420px] lg:h-[calc(100vh-140px)]">
+            {/* Right Column: Interactive Café Radar Map */}
+            <div className="lg:col-span-5 xl:col-span-6 lg:sticky lg:top-24 h-[360px] sm:h-[440px] lg:h-[calc(100vh-140px)]">
               <CafeMap
                 cafes={filteredCafes}
                 selectedCafeId={selectedCafeId}
@@ -482,7 +484,7 @@ export default function CoffeeShopDashboard() {
         {layoutMode === 'grid' && (
           <div>
             {filteredCafes.length > 0 ? (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
                 {filteredCafes.map((cafe, index) => (
                   <CafeCard
                     key={cafe.id}
@@ -506,7 +508,7 @@ export default function CoffeeShopDashboard() {
         )}
 
         {layoutMode === 'map' && (
-          <div className="w-full h-[calc(100vh-180px)] min-h-[500px]">
+          <div className="w-full h-[calc(100vh-150px)] sm:h-[calc(100vh-180px)] min-h-[460px] sm:min-h-[540px]">
             <CafeMap
               cafes={filteredCafes}
               selectedCafeId={selectedCafeId}
@@ -516,6 +518,26 @@ export default function CoffeeShopDashboard() {
           </div>
         )}
       </main>
+
+      {/* Mobile Floating Map / List Toggle Button */}
+      <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-30 pointer-events-auto">
+        <button
+          onClick={() => setLayoutMode(layoutMode === 'map' ? 'split' : 'map')}
+          className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-600 to-amber-700 text-white font-black text-xs shadow-2xl border border-amber-400/40 backdrop-blur-lg hover:brightness-110 active:scale-95 transition-all"
+        >
+          {layoutMode === 'map' ? (
+            <>
+              <Columns className="w-4 h-4" />
+              <span>View List ({filteredCafes.length})</span>
+            </>
+          ) : (
+            <>
+              <MapIcon className="w-4 h-4" />
+              <span>View on Map</span>
+            </>
+          )}
+        </button>
+      </div>
 
       {/* Modals */}
       {activeModal === 'detail' && modalTargetCafe && (
@@ -566,7 +588,7 @@ export default function CoffeeShopDashboard() {
 
       {/* Floating Toast Notification */}
       {toastMessage && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-[#1e1711]/95 border border-amber-500/50 shadow-warm text-white text-xs font-semibold backdrop-blur-md animate-in fade-in slide-in-from-bottom-3 duration-200">
+        <div className="fixed bottom-20 lg:bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-[#1e1711]/95 border border-amber-500/50 shadow-warm text-white text-xs font-semibold backdrop-blur-md animate-in fade-in slide-in-from-bottom-3 duration-200 max-w-[90vw] text-center">
           {toastMessage}
         </div>
       )}

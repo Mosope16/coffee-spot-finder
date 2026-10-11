@@ -61,8 +61,8 @@ export default function VibeQuizModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-lg rounded-3xl bg-[#17120e] border border-[#2d2218] shadow-2xl text-stone-100 p-6 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative w-full max-w-lg max-h-[92vh] overflow-y-auto rounded-2xl sm:rounded-3xl bg-[#17120e] border border-[#2d2218] shadow-2xl text-stone-100 p-4 sm:p-6 overflow-hidden">
         {/* Glow backdrop */}
         <div className="absolute -top-24 -right-24 w-60 h-60 bg-amber-600/20 rounded-full blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-24 w-60 h-60 bg-yellow-600/20 rounded-full blur-3xl pointer-events-none" />
@@ -222,16 +222,16 @@ export default function VibeQuizModal({
                 </div>
               </div>
 
-              <div className="p-4 flex items-center justify-between gap-3 text-xs">
+              <div className="p-3.5 sm:p-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 text-xs">
                 <div>
                   <span className="text-emerald-400 font-extrabold text-sm block">⚡ {matchedCafe.wifi_speed_mbps} Mbps Wi-Fi</span>
                   <span className="text-stone-400 text-[11px]">Rating: {matchedCafe.rating} ★</span>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 justify-end">
                   <button
                     onClick={resetQuiz}
-                    className="p-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 transition-colors"
+                    className="p-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 transition-colors"
                     title="Retake Quiz"
                   >
                     <RotateCcw className="w-4 h-4" />
@@ -242,7 +242,7 @@ export default function VibeQuizModal({
                       onSelectCafe(matchedCafe);
                       onClose();
                     }}
-                    className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 text-white font-extrabold shadow-warm hover:brightness-110 transition-all flex items-center gap-1.5"
+                    className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 text-white font-extrabold shadow-warm hover:brightness-110 transition-all flex items-center justify-center gap-1.5 active:scale-95"
                   >
                     <span>Explore Café</span>
                     <ArrowRight className="w-4 h-4" />

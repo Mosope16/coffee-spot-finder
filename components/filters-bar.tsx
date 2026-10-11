@@ -31,10 +31,10 @@ export default function FiltersBar({
   totalResultsCount
 }: FiltersBarProps) {
   return (
-    <div className="w-full border-b border-[#2d2218] bg-[#16110c] py-3 px-4 sm:px-6">
-      <div className="max-w-7xl mx-auto space-y-3">
+    <div className="w-full border-b border-[#2d2218] bg-[#16110c] py-2.5 sm:py-3 px-3 sm:px-6">
+      <div className="max-w-7xl mx-auto space-y-2.5 sm:space-y-3">
         {/* Top Row: Work Vibe Pills */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+        <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pb-0.5 -mx-1 px-1">
           <button
             onClick={() => onFilterChange({ workVibe: 'all' })}
             className={`px-3 py-1.5 rounded-full text-xs font-bold shrink-0 transition-all border ${
@@ -67,9 +67,9 @@ export default function FiltersBar({
         </div>
 
         {/* Bottom Row: Nomad Quick Filters & Layout Switch */}
-        <div className="flex flex-wrap items-center justify-between gap-3 pt-1 text-xs">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 sm:gap-3 pt-0.5 text-xs">
           {/* Nomad Quick Filter Toggles */}
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar pb-1 sm:pb-0 -mx-1 px-1">
             {/* 100+ Mbps Wi-Fi */}
             <button
               onClick={() =>
@@ -83,8 +83,8 @@ export default function FiltersBar({
                   : 'bg-[#1e1711] text-stone-400 border-[#2d2218] hover:text-white'
               }`}
             >
-              <Wifi className="w-3.5 h-3.5 text-emerald-400" />
-              <span>⚡ Fast Wi-Fi (100+ Mbps)</span>
+              <Wifi className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span>Fast Wi-Fi (100+ Mbps)</span>
             </button>
 
             {/* Outlets Needed */}
@@ -98,8 +98,8 @@ export default function FiltersBar({
                   : 'bg-[#1e1711] text-stone-400 border-[#2d2218] hover:text-white'
               }`}
             >
-              <Zap className="w-3.5 h-3.5 text-amber-400" />
-              <span>🔌 Outlets Plentiful</span>
+              <Zap className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span>Outlets Plentiful</span>
             </button>
 
             {/* Quiet Only */}
@@ -113,8 +113,8 @@ export default function FiltersBar({
                   : 'bg-[#1e1711] text-stone-400 border-[#2d2218] hover:text-white'
               }`}
             >
-              <VolumeX className="w-3.5 h-3.5 text-purple-400" />
-              <span>🤫 Quiet Space</span>
+              <VolumeX className="w-3.5 h-3.5 text-purple-400 shrink-0" />
+              <span>Quiet Space</span>
             </button>
 
             {/* Outdoor Patio */}
@@ -128,16 +128,16 @@ export default function FiltersBar({
                   : 'bg-[#1e1711] text-stone-400 border-[#2d2218] hover:text-white'
               }`}
             >
-              <Sun className="w-3.5 h-3.5 text-teal-400" />
-              <span>🌿 Outdoor Patio</span>
+              <Sun className="w-3.5 h-3.5 text-teal-400 shrink-0" />
+              <span>Outdoor Patio</span>
             </button>
           </div>
 
           {/* Right: Sort & Layout */}
-          <div className="flex items-center gap-3 ml-auto">
+          <div className="flex items-center justify-between sm:justify-end gap-2 shrink-0">
             {/* Sort Dropdown */}
-            <div className="flex items-center gap-1 bg-[#1e1711] border border-[#2d2218] rounded-lg px-2 py-1">
-              <span className="text-stone-400 hidden sm:inline">Sort:</span>
+            <div className="flex items-center gap-1 bg-[#1e1711] border border-[#2d2218] rounded-lg px-2 py-1 text-xs">
+              <span className="text-stone-400">Sort:</span>
               <select
                 value={filters.sortBy}
                 onChange={(e) =>
@@ -154,14 +154,15 @@ export default function FiltersBar({
               </select>
             </div>
 
-            {/* Layout Mode Switch */}
-            <div className="hidden md:flex items-center bg-[#1e1711] border border-[#2d2218] rounded-lg p-0.5">
+            {/* Layout Mode Switch - Available on ALL screen sizes */}
+            <div className="flex items-center bg-[#1e1711] border border-[#2d2218] rounded-lg p-0.5">
               <button
                 onClick={() => onLayoutChange('split')}
                 className={`p-1.5 rounded-md transition-colors ${
                   layoutMode === 'split' ? 'bg-amber-600 text-white' : 'text-stone-400 hover:text-white'
                 }`}
-                title="Split View (Map + Cafés)"
+                title="Split / List View"
+                aria-label="Split / List View"
               >
                 <Columns className="w-3.5 h-3.5" />
               </button>
@@ -171,6 +172,7 @@ export default function FiltersBar({
                   layoutMode === 'grid' ? 'bg-amber-600 text-white' : 'text-stone-400 hover:text-white'
                 }`}
                 title="Cards Grid"
+                aria-label="Cards Grid"
               >
                 <LayoutGrid className="w-3.5 h-3.5" />
               </button>
@@ -179,7 +181,8 @@ export default function FiltersBar({
                 className={`p-1.5 rounded-md transition-colors ${
                   layoutMode === 'map' ? 'bg-amber-600 text-white' : 'text-stone-400 hover:text-white'
                 }`}
-                title="Full Screen Map Radar"
+                title="Map Radar View"
+                aria-label="Map Radar View"
               >
                 <MapIcon className="w-3.5 h-3.5" />
               </button>

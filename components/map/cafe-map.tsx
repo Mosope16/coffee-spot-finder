@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 import { CafeSpot } from '@/lib/types';
 import { WORK_VIBE_META } from '@/lib/constants';
+import { Wifi, Star, ChevronRight, X } from 'lucide-react';
 import type L from 'leaflet';
 
 interface CafeMapProps {
@@ -21,6 +23,11 @@ export default function CafeMap({
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<L.Map | null>(null);
   const markersRef = useRef<{ [id: string]: L.Marker }>({});
+  const [dismissedPreviewId, setDismissedPreviewId] = useState<string | null>(null);
+
+  const selectedCafe = selectedCafeId && dismissedPreviewId !== selectedCafeId
+    ? cafes.find((c) => c.id === selectedCafeId)
+    : null;
 
   useEffect(() => {
     if (!mapContainerRef.current || typeof window === 'undefined') return;
@@ -147,15 +154,68 @@ export default function CafeMap({
   }, [cafes, selectedCafeId, onSelectCafe, selectedCity]);
 
   return (
-    <div className="relative w-full h-full min-h-[380px] rounded-3xl overflow-hidden border border-[#2d2218] shadow-2xl bg-[#14100c]">
+    <div className="relative w-full h-full min-h-[360px] sm:min-h-[420px] rounded-2xl sm:rounded-3xl overflow-hidden border border-[#2d2218] shadow-2xl bg-[#14100c]">
       <div ref={mapContainerRef} className="w-full h-full" />
 
       {/* Floating Radar Tag */}
-      <div className="absolute top-4 left-4 z-[400] flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/85 border border-stone-800 text-xs font-semibold text-white shadow-lg pointer-events-none">
-        <span className="w-2 h-2 rounded-full bg-amber-400" />
+      <div className="absolute top-3 left-3 sm:top-4 sm:left-4 z-[20] flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-full bg-black/85 border border-stone-800 text-[11px] sm:text-xs font-semibold text-white shadow-lg pointer-events-none">
+        <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
         <span>Café Radar</span>
         <span className="text-[10px] text-amber-400 font-bold">({cafes.length} Spots)</span>
       </div>
+
+      {/* Floating Selected Café Preview Card (Optimized for mobile & tablet screens) */}
+      {selectedCafe && (
+        <div className="absolute bottom-3 left-3 right-3 sm:left-auto sm:right-4 sm:w-80 z-[20] bg-[#1a140f]/95 border border-amber-500/40 rounded-2xl p-2.5 sm:p-3 shadow-2xl backdrop-blur-md animate-in slide-in-from-bottom-2 duration-200">
+          <div className="flex items-center justify-between pb-1.5 border-b border-[#2d2218] mb-2">
+            <span className="text-[10px] font-bold uppercase text-amber-400 tracking-wider flex items-center gap-1">
+              📍 Pin Selected
+            </span>
+            <button
+              onClick={() => setDismissedPreviewId(selectedCafe.id)}
+              className="p-1 rounded-full text-stone-400 hover:text-white hover:bg-stone-800 transition-colors"
+              title="Dismiss preview"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+
+          <div className="flex items-center gap-2.5 sm:gap-3">
+            <div className="relative w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden shrink-0 border border-[#2d2218]">
+              <Image
+                src={selectedCafe.images[0]}
+                alt={selectedCafe.name}
+                fill
+                sizes="56px"
+                className="object-cover"
+              />
+            </div>
+            <div className="flex-1 min-w-0">
+              <h4 className="text-xs font-black text-white truncate">{selectedCafe.name}</h4>
+              <p className="text-[11px] text-amber-300 truncate">{selectedCafe.neighborhood}</p>
+              <div className="flex items-center gap-2 mt-0.5 text-[10px]">
+                <span className="text-emerald-400 font-bold flex items-center gap-0.5">
+                  <Wifi className="w-3 h-3" />
+                  {selectedCafe.wifi_speed_mbps}M
+                </span>
+                <span className="text-stone-500">•</span>
+                <span className="text-amber-300 font-bold flex items-center gap-0.5">
+                  <Star className="w-3 h-3 fill-amber-300" />
+                  {selectedCafe.rating}
+                </span>
+              </div>
+            </div>
+            <button
+              onClick={() => onSelectCafe(selectedCafe)}
+              className="p-2 sm:px-3 sm:py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold shrink-0 transition-all shadow-md active:scale-95 flex items-center gap-1"
+              title="Open full café details"
+            >
+              <span className="hidden sm:inline">View</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -46,8 +46,8 @@ export default function CheckInModal({
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-md rounded-3xl bg-[#17120e] border border-[#2d2218] shadow-2xl text-stone-100 p-6 overflow-hidden">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative w-full max-w-md max-h-[92vh] overflow-y-auto rounded-2xl sm:rounded-3xl bg-[#17120e] border border-[#2d2218] shadow-2xl text-stone-100 p-4 sm:p-6">
         {/* Header */}
         <div className="flex items-center justify-between pb-4 border-b border-[#2d2218]">
           <div className="flex items-center gap-2">

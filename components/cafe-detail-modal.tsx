@@ -103,10 +103,10 @@ export default function CafeDetailModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
-      <div className="relative w-full max-w-3xl max-h-[92vh] overflow-y-auto rounded-3xl bg-[#17120e] border border-[#2d2218] shadow-2xl text-stone-100 flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2.5 sm:p-6 overflow-y-auto bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+      <div className="relative w-full max-w-3xl max-h-[94vh] sm:max-h-[90vh] overflow-y-auto rounded-2xl sm:rounded-3xl bg-[#17120e] border border-[#2d2218] shadow-2xl text-stone-100 flex flex-col">
         {/* Top Hero Banner */}
-        <div className="relative h-64 sm:h-72 w-full shrink-0 bg-stone-950">
+        <div className="relative h-52 sm:h-72 w-full shrink-0 bg-stone-950">
           <Image
             src={cafe.images[activeImageIndex] || cafe.images[0]}
             alt={cafe.name}
@@ -115,23 +115,23 @@ export default function CafeDetailModal({
             sizes="(max-width: 768px) 100vw, 800px"
             className="object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#17120e] via-black/40 to-black/60" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#17120e] via-black/30 to-black/60" />
 
           {/* Top Controls */}
-          <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
-            <div className="flex items-center gap-2">
-              <span className={`px-3 py-1 rounded-full text-xs font-bold backdrop-blur-md border ${vibeMeta.badgeClass} bg-black/50`}>
+          <div className="absolute top-2.5 left-2.5 right-2.5 sm:top-4 sm:left-4 sm:right-4 flex items-center justify-between z-10 gap-2">
+            <div className="flex flex-wrap items-center gap-1.5 sm:gap-2">
+              <span className={`px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold backdrop-blur-md border ${vibeMeta.badgeClass} bg-black/50`}>
                 {vibeMeta.label}
               </span>
-              <span className="px-3 py-1 rounded-full text-xs font-bold backdrop-blur-md bg-black/50 text-emerald-400 border border-emerald-500/30">
+              <span className="px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold backdrop-blur-md bg-black/50 text-emerald-400 border border-emerald-500/30">
                 ⚡ {cafe.wifi_speed_mbps} Mbps
               </span>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               <button
                 onClick={handleShare}
-                className="p-2 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white hover:bg-black/80"
+                className="p-2 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white hover:bg-black/80 active:scale-95"
                 title="Share Café"
               >
                 {copied ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <Share2 className="w-4 h-4" />}
@@ -139,7 +139,7 @@ export default function CafeDetailModal({
 
               <button
                 onClick={onToggleSave}
-                className="p-2 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white hover:bg-black/80"
+                className="p-2 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white hover:bg-black/80 active:scale-95"
                 title="Save Café"
               >
                 <Heart className={`w-4 h-4 ${isSaved ? 'fill-rose-500 text-rose-500' : 'text-stone-200'}`} />
@@ -147,7 +147,7 @@ export default function CafeDetailModal({
 
               <button
                 onClick={onClose}
-                className="p-2 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white hover:bg-black/80"
+                className="p-2 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-white hover:bg-black/80 active:scale-95"
                 title="Close"
               >
                 <X className="w-4 h-4" />
@@ -155,88 +155,89 @@ export default function CafeDetailModal({
             </div>
           </div>
 
-          {/* Title & Neighborhood */}
-          <div className="absolute bottom-4 left-4 right-4 z-10">
-            <div className="flex items-center gap-1.5 text-xs text-amber-400 font-semibold mb-1">
-              <MapPin className="w-3.5 h-3.5" />
-              <span>{cafe.neighborhood}</span>
+          {/* Title & Neighborhood (Full width banner overlay) */}
+          <div className="absolute bottom-2.5 left-2.5 right-2.5 sm:bottom-4 sm:left-4 sm:right-4 z-10">
+            <div className="flex items-center gap-1.5 text-xs text-amber-400 font-semibold mb-0.5 sm:mb-1">
+              <MapPin className="w-3.5 h-3.5 shrink-0" />
+              <span className="truncate">{cafe.neighborhood}</span>
               <span>•</span>
-              <span>{cafe.city}</span>
+              <span className="truncate">{cafe.city}</span>
             </div>
-            <h1 className="text-2xl sm:text-3xl font-black text-white leading-tight">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-white leading-tight">
               {cafe.name}
             </h1>
           </div>
-
-          {/* Thumbnail Gallery (if multiple) */}
-          {cafe.images.length > 1 && (
-            <div className="absolute bottom-4 right-4 flex items-center gap-1.5 z-10">
-              {cafe.images.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveImageIndex(idx)}
-                  className={`w-11 h-11 rounded-lg overflow-hidden border-2 relative transition-all ${
-                    activeImageIndex === idx ? 'border-amber-400 scale-105' : 'border-white/40 opacity-70 hover:opacity-100'
-                  }`}
-                >
-                  <Image src={img} alt="thumb" fill sizes="48px" className="object-cover" />
-                </button>
-              ))}
-            </div>
-          )}
         </div>
 
+        {/* Thumbnail Gallery Strip (Placed below hero so it never clips or overlaps the title) */}
+        {cafe.images.length > 1 && (
+          <div className="px-3.5 sm:px-6 py-2.5 flex items-center gap-2 overflow-x-auto no-scrollbar border-b border-[#2d2218]/60 bg-[#16110d]">
+            <span className="text-[10px] uppercase font-bold text-stone-400 shrink-0">Photos:</span>
+            {cafe.images.map((img, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveImageIndex(idx)}
+                className={`w-11 h-11 sm:w-13 sm:h-13 rounded-xl overflow-hidden border-2 relative shrink-0 transition-all ${
+                  activeImageIndex === idx ? 'border-amber-400 scale-105 shadow-md' : 'border-stone-800 opacity-60 hover:opacity-100'
+                }`}
+              >
+                <Image src={img} alt="thumb" fill sizes="52px" className="object-cover" />
+              </button>
+            ))}
+          </div>
+        )}
+
         {/* Content Body */}
-        <div className="p-4 sm:p-6 space-y-6">
+        <div className="p-3.5 sm:p-6 space-y-4 sm:space-y-6">
           {/* Nomad Work Readiness Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-2xl bg-[#1e1711] border border-[#2d2218] text-xs">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3 p-3 sm:p-4 rounded-2xl bg-[#1e1711] border border-[#2d2218] text-xs">
             {/* Wi-Fi */}
-            <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400">
+            <div className="flex items-center gap-2 sm:gap-2.5">
+              <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 shrink-0">
                 <Wifi className="w-4 h-4" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="text-stone-400 block text-[10px]">Speed Tested</span>
-                <span className="font-bold text-white text-xs">{cafe.wifi_speed_mbps} Mbps</span>
+                <span className="font-bold text-white text-xs truncate block">{cafe.wifi_speed_mbps} Mbps</span>
               </div>
             </div>
 
             {/* Outlets */}
-            <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400">
+            <div className="flex items-center gap-2 sm:gap-2.5">
+              <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400 shrink-0">
                 <Zap className="w-4 h-4" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="text-stone-400 block text-[10px]">Power Outlets</span>
-                <span className="font-bold text-white text-xs">{outletMeta.label}</span>
+                <span className="font-bold text-white text-xs truncate block">{outletMeta.label}</span>
               </div>
             </div>
 
             {/* Noise */}
-            <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400">
+            <div className="flex items-center gap-2 sm:gap-2.5">
+              <div className="p-2 rounded-xl bg-purple-500/10 text-purple-400 shrink-0">
                 <Volume2 className="w-4 h-4" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="text-stone-400 block text-[10px]">Noise Level</span>
-                <span className="font-bold text-white text-xs">{noiseMeta.label}</span>
+                <span className="font-bold text-white text-xs truncate block">{noiseMeta.label}</span>
               </div>
             </div>
 
             {/* Seating */}
-            <div className="flex items-center gap-2.5">
-              <div className="p-2 rounded-xl bg-teal-500/10 text-teal-400">
+            <div className="flex items-center gap-2 sm:gap-2.5">
+              <div className="p-2 rounded-xl bg-teal-500/10 text-teal-400 shrink-0">
                 <Users className="w-4 h-4" />
               </div>
-              <div>
+              <div className="min-w-0">
                 <span className="text-stone-400 block text-[10px]">Seating Layout</span>
-                <span className="font-bold text-white text-xs capitalize">{cafe.seating_capacity}</span>
+                <span className="font-bold text-white text-xs capitalize truncate block">{cafe.seating_capacity}</span>
               </div>
             </div>
           </div>
 
           {/* Live Crowd & Busyness Banner */}
-          <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-[#1e1711] border border-[#2d2218] text-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3.5 sm:p-4 rounded-2xl bg-[#1e1711] border border-[#2d2218] text-xs">
             <div>
               <div className="flex items-center gap-2 mb-1">
                 <span className="w-2.5 h-2.5 rounded-full animate-ping" style={{ backgroundColor: busynessMeta.color }} />
@@ -251,7 +252,7 @@ export default function CafeDetailModal({
 
             <button
               onClick={() => onOpenCheckIn(cafe)}
-              className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold transition-all shadow-md active:scale-95"
+              className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold transition-all shadow-md active:scale-95 text-center shrink-0"
             >
               Report Live Desk Status
             </button>
@@ -355,13 +356,13 @@ export default function CafeDetailModal({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
                   <div>
                     <label className="block text-stone-300 font-bold mb-1">Overall (1-5)</label>
                     <select
                       value={rating}
                       onChange={(e) => setRating(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-xl bg-[#14100c] border border-[#2d2218] text-white focus:outline-none"
+                      className="w-full px-3 py-2 rounded-xl bg-[#14100c] border border-[#2d2218] text-white focus:outline-none cursor-pointer"
                     >
                       {[5, 4, 3, 2, 1].map((n) => (
                         <option key={n} value={n}>{n} Stars</option>
@@ -373,7 +374,7 @@ export default function CafeDetailModal({
                     <select
                       value={wifiRating}
                       onChange={(e) => setWifiRating(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-xl bg-[#14100c] border border-[#2d2218] text-white focus:outline-none"
+                      className="w-full px-3 py-2 rounded-xl bg-[#14100c] border border-[#2d2218] text-white focus:outline-none cursor-pointer"
                     >
                       {[5, 4, 3, 2, 1].map((n) => (
                         <option key={n} value={n}>{n} Stars</option>
@@ -385,7 +386,7 @@ export default function CafeDetailModal({
                     <select
                       value={outletRating}
                       onChange={(e) => setOutletRating(Number(e.target.value))}
-                      className="w-full px-3 py-2 rounded-xl bg-[#14100c] border border-[#2d2218] text-white focus:outline-none"
+                      className="w-full px-3 py-2 rounded-xl bg-[#14100c] border border-[#2d2218] text-white focus:outline-none cursor-pointer"
                     >
                       {[5, 4, 3, 2, 1].map((n) => (
                         <option key={n} value={n}>{n} Stars</option>
