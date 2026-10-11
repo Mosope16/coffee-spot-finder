@@ -1,13 +1,10 @@
-const CACHE_NAME = 'coffee-finder-v1';
-
-self.addEventListener('install', (event) => {
-  self.skipWaiting();
-});
-
+self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (event) => {
-  event.waitUntil(self.clients.claim());
-});
-
-self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
+  event.waitUntil(
+    self.registration.unregister().then(() => {
+      return self.clients.matchAll();
+    }).then((clients) => {
+      clients.forEach((client) => client.navigate(client.url));
+    })
+  );
 });

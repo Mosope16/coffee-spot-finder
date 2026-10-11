@@ -17,6 +17,8 @@ import CafeDetailModal from '@/components/cafe-detail-modal';
 import CheckInModal from '@/components/checkin-modal';
 import VibeQuizModal from '@/components/vibe-quiz-modal';
 
+import { CITIES } from '@/lib/constants';
+import { fetchOverpassCafes } from '@/lib/overpass';
 import {
   Coffee,
   Wifi,
@@ -27,7 +29,10 @@ import {
   Sparkles,
   ChevronRight,
   Flame,
-  Star
+  Star,
+  Loader2,
+  Navigation,
+  Globe2
 } from 'lucide-react';
 
 const CafeMap = dynamic(() => import('@/components/map/cafe-map'), {
@@ -49,6 +54,11 @@ export default function CoffeeShopDashboard() {
   const [selectedCity, setSelectedCity] = useState('all');
   const [showOnlySaved, setShowOnlySaved] = useState(false);
   const [layoutMode, setLayoutMode] = useState<'split' | 'grid' | 'map'>('split');
+
+  // Live OpenStreetMap & Geolocation States
+  const [isLocating, setIsLocating] = useState(false);
+  const [isLoadingOsm, setIsLoadingOsm] = useState(false);
+  const [isLiveOsmActive, setIsLiveOsmActive] = useState(false);
 
   // Modals & Extras
   const [activeModal, setActiveModal] = useState<'detail' | 'checkin' | 'quiz' | null>(null);
@@ -83,9 +93,98 @@ export default function CoffeeShopDashboard() {
     setFilters((prev) => ({ ...prev, ...newFilters }));
   };
 
-  const handleCitySelect = (city: string) => {
+  const handleCitySelect = async (city: string) => {
     setSelectedCity(city);
     handleFilterUpdate({ city });
+
+    if (city === 'all') {
+      setIsLiveOsmActive(false);
+      return;
+    }
+
+    if (city === 'current-gps') {
+      setIsLiveOsmActive(true);
+      return;
+    }
+
+    // Attempt live OpenStreetMap Overpass lookup for selected city
+    const targetCity = CITIES.find((c) => c.value === city);
+    if (targetCity && targetCity.lat && targetCity.lng) {
+      setIsLoadingOsm(true);
+      showToast(`🛰️ Scanning OpenStreetMap for cafes in ${targetCity.name.split(',')[0]}...`);
+      try {
+        const liveCityCafes = await fetchOverpassCafes(
+          targetCity.lat,
+          targetCity.lng,
+          targetCity.value,
+          4000
+        );
+        if (liveCityCafes.length > 0) {
+          setCafes((prev) => {
+            const newIds = new Set(liveCityCafes.map((c) => c.id));
+            const remaining = prev.filter((c) => !newIds.has(c.id));
+            return [...liveCityCafes, ...remaining];
+          });
+          setIsLiveOsmActive(true);
+          setSelectedCafeId(liveCityCafes[0].id);
+          showToast(`⚡ Loaded ${liveCityCafes.length} live OpenStreetMap cafés in ${targetCity.name.split(',')[0]}!`);
+        }
+      } catch (err) {
+        console.error('Overpass city fetch error:', err);
+      } finally {
+        setIsLoadingOsm(false);
+      }
+    }
+  };
+
+  const handleLocateMe = () => {
+    if (typeof window === 'undefined' || !navigator.geolocation) {
+      showToast('Geolocation is not supported by your browser.');
+      return;
+    }
+
+    setIsLocating(true);
+    showToast('📡 Acquiring your GPS position...');
+
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const lat = position.coords.latitude;
+        const lng = position.coords.longitude;
+        setIsLoadingOsm(true);
+        showToast('🛰️ Querying OpenStreetMap Overpass API around your location...');
+
+        try {
+          const liveCafes = await fetchOverpassCafes(lat, lng, 'Current Location', 4000);
+          if (liveCafes.length > 0) {
+            setCafes((prev) => {
+              const newIds = new Set(liveCafes.map((c) => c.id));
+              const remaining = prev.filter((c) => !newIds.has(c.id));
+              return [...liveCafes, ...remaining];
+            });
+            setSelectedCity('current-gps');
+            handleFilterUpdate({ city: 'current-gps' });
+            setIsLiveOsmActive(true);
+            setSelectedCafeId(liveCafes[0].id);
+            showToast(`📍 Found ${liveCafes.length} live cafés near you on OpenStreetMap!`);
+          } else {
+            showToast('No cafés found within 4km on OSM. Showing curated spots.');
+            setSelectedCity('all');
+          }
+        } catch (error) {
+          console.error('Overpass error:', error);
+          showToast('Could not reach Overpass servers. Showing cached & curated spots.');
+        } finally {
+          setIsLocating(false);
+          setIsLoadingOsm(false);
+        }
+      },
+      (error) => {
+        setIsLocating(false);
+        console.warn('Geolocation error:', error);
+        showToast('Location permission denied or timed out. Please choose a city manually.');
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
   };
 
   const handleToggleSave = (e: React.MouseEvent | null, cafeId: string) => {
@@ -116,7 +215,9 @@ export default function CoffeeShopDashboard() {
       result = result.filter((c) => savedIds.includes(c.id));
     }
 
-    if (selectedCity !== 'all') {
+    if (selectedCity === 'current-gps') {
+      result = result.filter((c) => c.city === 'Current Location' || c.id.startsWith('osm-'));
+    } else if (selectedCity !== 'all') {
       result = result.filter((c) => c.city === selectedCity);
     }
 
@@ -185,6 +286,8 @@ export default function CoffeeShopDashboard() {
         showOnlySaved={showOnlySaved}
         onToggleSavedOnly={() => setShowOnlySaved((prev) => !prev)}
         onOpenQuiz={() => setActiveModal('quiz')}
+        onLocateMe={handleLocateMe}
+        isLocating={isLocating}
       />
 
       {/* Hero Nomad Spotlight Banner */}
@@ -258,14 +361,33 @@ export default function CoffeeShopDashboard() {
       {/* Main Content Area */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6">
         {/* Results Header */}
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div className="flex flex-wrap items-center gap-2">
             <h3 className="font-extrabold text-lg text-white">
-              {showOnlySaved ? 'Your Saved Cafés' : 'Remote Work Cafés Near You'}
+              {showOnlySaved
+                ? 'Your Saved Cafés'
+                : selectedCity === 'current-gps'
+                ? 'Cafés Around Your GPS Location'
+                : 'Remote Work Cafés Near You'}
             </h3>
             <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-[#1e1711] text-amber-300 border border-[#2d2218]">
               {filteredCafes.length} Spots
             </span>
+            {isLoadingOsm && (
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 animate-pulse">
+                <Loader2 className="w-3 h-3 animate-spin text-amber-400" />
+                Scanning Overpass API...
+              </span>
+            )}
+            {!isLoadingOsm && isLiveOsmActive && (
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
+                </span>
+                ⚡ Live OpenStreetMap Data
+              </span>
+            )}
           </div>
 
           {showOnlySaved && (
