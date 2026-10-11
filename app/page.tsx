@@ -144,46 +144,60 @@ export default function CoffeeShopDashboard() {
     }
 
     setIsLocating(true);
-    showToast('📡 Acquiring your GPS position...');
+    showToast('📡 Finding your location...');
 
-    navigator.geolocation.getCurrentPosition(
-      async (position) => {
-        const lat = position.coords.latitude;
-        const lng = position.coords.longitude;
-        setIsLoadingOsm(true);
-        showToast('🛰️ Querying OpenStreetMap Overpass API around your location...');
+    const onGeoSuccess = async (position: GeolocationPosition) => {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+      setIsLoadingOsm(true);
+      showToast('🛰️ Querying OpenStreetMap Overpass API around your location...');
 
-        try {
-          const liveCafes = await fetchOverpassCafes(lat, lng, 'Current Location', 4000);
-          if (liveCafes.length > 0) {
-            setCafes((prev) => {
-              const newIds = new Set(liveCafes.map((c) => c.id));
-              const remaining = prev.filter((c) => !newIds.has(c.id));
-              return [...liveCafes, ...remaining];
-            });
-            setSelectedCity('current-gps');
-            handleFilterUpdate({ city: 'current-gps' });
-            setIsLiveOsmActive(true);
-            setSelectedCafeId(liveCafes[0].id);
-            showToast(`📍 Found ${liveCafes.length} live cafés near you on OpenStreetMap!`);
-          } else {
-            showToast('No cafés found within 4km on OSM. Showing curated spots.');
-            setSelectedCity('all');
-          }
-        } catch (error) {
-          console.error('Overpass error:', error);
-          showToast('Could not reach Overpass servers. Showing cached & curated spots.');
-        } finally {
-          setIsLocating(false);
-          setIsLoadingOsm(false);
+      try {
+        const liveCafes = await fetchOverpassCafes(lat, lng, 'Current Location', 4000);
+        if (liveCafes.length > 0) {
+          setCafes((prev) => {
+            const newIds = new Set(liveCafes.map((c) => c.id));
+            const remaining = prev.filter((c) => !newIds.has(c.id));
+            return [...liveCafes, ...remaining];
+          });
+          setSelectedCity('current-gps');
+          handleFilterUpdate({ city: 'current-gps' });
+          setIsLiveOsmActive(true);
+          setSelectedCafeId(liveCafes[0].id);
+          showToast(`📍 Found ${liveCafes.length} live cafés near you on OpenStreetMap!`);
+        } else {
+          showToast('No cafés found within 4km on OSM. Showing curated spots.');
+          setSelectedCity('all');
         }
-      },
-      (error) => {
+      } catch (error) {
+        console.error('Overpass error:', error);
+        showToast('Could not reach Overpass servers. Showing cached & curated spots.');
+      } finally {
         setIsLocating(false);
-        console.warn('Geolocation error:', error);
-        showToast('Location permission denied or timed out. Please choose a city manually.');
-      },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+        setIsLoadingOsm(false);
+      }
+    };
+
+    const onGeoError = (error: GeolocationPositionError) => {
+      setIsLocating(false);
+      console.warn(`Geolocation error [code ${error.code}]: ${error.message}`);
+
+      if (error.code === error.PERMISSION_DENIED) {
+        showToast('🔒 Location access blocked. Click the icon in your browser URL bar to allow location.');
+      } else if (error.code === error.POSITION_UNAVAILABLE) {
+        showToast('📍 Location unavailable on this device. Please select your city from the dropdown.');
+      } else if (error.code === error.TIMEOUT) {
+        showToast('⏱️ Location request timed out. Please select your city from the dropdown.');
+      } else {
+        showToast('Could not acquire location. Please choose a city manually.');
+      }
+    };
+
+    // Use fast standard network/Wi-Fi accuracy first (desktop/laptop friendly)
+    navigator.geolocation.getCurrentPosition(
+      onGeoSuccess,
+      onGeoError,
+      { enableHighAccuracy: false, timeout: 8000, maximumAge: 120000 }
     );
   };
 
