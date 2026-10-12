@@ -12,7 +12,8 @@ import {
   Heart,
   Clock,
   Coffee,
-  ChevronRight
+  ChevronRight,
+  Compass
 } from 'lucide-react';
 
 interface CafeCardProps {
@@ -112,9 +113,21 @@ export default function CafeCard({
               <span className="text-stone-400 font-normal shrink-0">{cafe.city}</span>
             </div>
 
-            <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-[#2d2218] text-amber-300 text-xs font-bold shrink-0">
-              <Star className="w-3 h-3 fill-amber-300" />
-              <span>{cafe.rating}</span>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <a
+                href={`https://www.google.com/maps/dir/?api=1&destination=${cafe.lat},${cafe.lng}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="p-1 rounded-md text-stone-400 hover:text-amber-400 hover:bg-stone-800/80 transition-colors"
+                title="Get Directions on Google Maps"
+              >
+                <Compass className="w-3.5 h-3.5" />
+              </a>
+              <div className="flex items-center gap-1 px-1.5 py-0.5 rounded-md bg-[#2d2218] text-amber-300 text-xs font-bold">
+                <Star className="w-3 h-3 fill-amber-300" />
+                <span>{cafe.rating}</span>
+              </div>
             </div>
           </div>
 

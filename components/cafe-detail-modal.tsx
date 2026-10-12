@@ -24,7 +24,9 @@ import {
   CheckCircle2,
   Sparkles,
   Send,
-  MessageSquare
+  MessageSquare,
+  Compass,
+  ExternalLink
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { addCafeReview } from '@/lib/storage';
@@ -303,10 +305,21 @@ export default function CafeDetailModal({
                   Location & Hours
                 </h4>
                 <p className="text-xs text-stone-300 mb-1">{cafe.address}</p>
-                <div className="flex items-center gap-1.5 text-xs text-stone-400">
+                <div className="flex items-center gap-1.5 text-xs text-stone-400 mb-3">
                   <Clock className="w-3.5 h-3.5 text-amber-500" />
                   <span>Open {cafe.hours.open} – {cafe.hours.close}</span>
                 </div>
+                <a
+                  href={`https://www.google.com/maps/dir/?api=1&destination=${cafe.lat},${cafe.lng}&destination_place_id=${encodeURIComponent(cafe.name)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#251d16] hover:bg-[#33271e] text-amber-400 hover:text-amber-300 text-xs font-bold border border-amber-500/30 transition-all active:scale-95 shadow-sm"
+                  title="Open directions in Google Maps"
+                >
+                  <Compass className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Open in Google Maps</span>
+                  <ExternalLink className="w-3 h-3 text-stone-400" />
+                </a>
               </div>
             </div>
           </div>
