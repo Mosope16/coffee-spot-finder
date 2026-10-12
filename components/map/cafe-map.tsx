@@ -23,9 +23,8 @@ export default function CafeMap({
   selectedCity
 }: CafeMapProps) {
   const googleApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
-  const [mapEngine, setMapEngine] = useState<'google' | 'osm'>(
-    googleApiKey ? 'google' : 'osm'
-  );
+  // Default to OSM so map is instantly crystal-clear with zero watermarks or billing restrictions
+  const [mapEngine, setMapEngine] = useState<'google' | 'osm'>('osm');
   const [dismissedPreviewId, setDismissedPreviewId] = useState<string | null>(null);
 
   const selectedCafe =

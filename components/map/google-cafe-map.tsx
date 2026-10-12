@@ -99,6 +99,25 @@ export default function GoogleCafeMap({
   const infoWindowRef = useRef<google.maps.InfoWindow | null>(null);
   const [isScriptLoaded, setIsScriptLoaded] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [billingNotice, setBillingNotice] = useState(false);
+
+  // Detect billing errors from Google Maps JavaScript API
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const originalConsoleError = console.error;
+    console.error = (...args: unknown[]) => {
+      originalConsoleError.apply(console, args);
+      const text = args.map((a) => String(a)).join(' ');
+      if (text.includes('BillingNotEnabledMapError') || text.includes('billing-not-enabled-map-error')) {
+        setBillingNotice(true);
+      }
+    };
+
+    return () => {
+      console.error = originalConsoleError;
+    };
+  }, []);
 
   // Load Google Maps JavaScript API script
   useEffect(() => {
@@ -268,6 +287,38 @@ export default function GoogleCafeMap({
   return (
     <div className="relative w-full h-full">
       <div ref={mapContainerRef} className="w-full h-full" />
+      
+      {/* Google Cloud Billing Notice Banner */}
+      {billingNotice && (
+        <div className="absolute top-14 left-3 right-3 sm:left-4 sm:right-auto sm:max-w-md z-[25] p-3 rounded-2xl bg-[#1c140e]/95 border border-amber-500/50 shadow-2xl backdrop-blur-md text-xs text-stone-200 animate-in fade-in slide-in-from-top-2">
+          <div className="flex items-start gap-2.5">
+            <span className="text-base shrink-0">💳</span>
+            <div className="flex-1 min-w-0">
+              <p className="font-bold text-white text-xs mb-0.5">Google Cloud Billing Required</p>
+              <p className="text-[11px] text-stone-300 leading-relaxed mb-2.5">
+                Google requires linking a billing account to your project (includes $200/mo free credit) for full live tiles.
+              </p>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => onErrorFallback?.()}
+                  className="px-2.5 py-1 rounded-lg bg-amber-600 hover:bg-amber-500 text-white font-bold text-[11px] transition-all shadow-sm active:scale-95"
+                >
+                  Switch to OSM (Free)
+                </button>
+                <a
+                  href="https://console.cloud.google.com/billing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[11px] text-amber-400 hover:text-amber-300 hover:underline font-semibold"
+                >
+                  Enable Billing ↗
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {!isScriptLoaded && (
         <div className="absolute inset-0 bg-[#16110c] flex flex-col items-center justify-center text-stone-400 text-xs gap-3">
           <div className="w-6 h-6 rounded-full border-2 border-amber-500 border-t-transparent animate-spin" />
